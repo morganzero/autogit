@@ -1,21 +1,17 @@
 FROM python:3.9-slim AS base
 
-LABEL maintainer="morganzero@sushibox.dev"
-LABEL description="Automatic pulls and versioning"
-LABEL name="AutoGit"
+LABEL maintainer="morganzero@sushibox.dev" \
+      description="Automatic pulls and versioning" \
+      name="AutoGit"
 
 RUN apt-get update && \
     apt-get install -y git bash && \
     pip install Flask
 
-FROM base AS build
 WORKDIR /app
 COPY assets autogit.sh versioning.py index.html server.py /app/
 RUN chmod +x /app/autogit.sh
 
-FROM base AS final
-WORKDIR /app
-COPY --from=build /app /app/
 EXPOSE 8080
 
 ENV GITPATH=""
