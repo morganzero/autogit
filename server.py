@@ -6,10 +6,10 @@ app = Flask(__name__)
 
 def fetch_logs():
     try:
-        result = subprocess.check_output(['/app/auto-git.sh'])
+        result = subprocess.check_output(['/app/autogit.sh'])
         logs = result.decode('utf-8')
     except subprocess.CalledProcessError as e:
-        logs = f"Error running auto-git.sh: {e}"
+        logs = f"Error running autogit.sh: {e}"
     
     print(logs)  # Log the result to see if logs are being fetched correctly.
     return logs
