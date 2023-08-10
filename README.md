@@ -15,6 +15,7 @@ This project provides a minimal Docker container that automatically keeps a Git 
 Key Features:
 
     Automatic Git repository updates.
+    Automatic simple versioning (patch, minor, major)
     Logs served through a simple web frontend.
     Configurable Git repository path using GITPATH environment variable.
 
@@ -43,30 +44,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - ".logs:/var/logs"  # Change this to the desired log directory path
 ```
-Monitor multiple repos:
-```
-version: "3.9"
-services:
-  autogit:
-    container_name: autogit
-    image: docker.io/sushibox/autogit:latest
-    restart: always
-    ports:
-      - "8080:8080"
-    environment:
-      - BACKGROUND_IMAGE_URL="https://w.wallha.com/ws/13/X9tgSbmr.png"
-      - APP1.GITPATH=/path/to/app1/repo
-      - APP1.GITFILEPATH=/path/to/app1/version.file
-      - APP1.EXEC_INTERVAL=30
-      - APP1.AUTO_VERSIONING=true
-      - APP2.GITPATH=/path/to/app2/repo
-      - APP2.GITFILEPATH=/path/to/app2/version.file
-      - APP2.EXEC_INTERVAL=90
-      - APP2.AUTO_VERSIONING=false
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
-```
+
 ```bash
 docker run -d --name autogit \
   -p 8080:8080 \
