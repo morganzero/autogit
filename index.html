@@ -149,12 +149,13 @@ function setCustomBackground() {
             if (data.url) {
                 document.body.style.backgroundImage = `url('${data.url}')`;
             } else {
-                document.body.style.backgroundImage = "url('/assets/bg.png')";
+                // If no URL is provided, don't set any background.
+                document.body.style.backgroundImage = "";
             }
         })
         .catch(() => console.error("Error fetching background image URL."));
 }
-
+        
         function startFetchingLogs() {
             setInterval(fetchLogs, 2000);
             fetchLogs();
