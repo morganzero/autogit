@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AutoGit</title>
+    <link rel="icon" href="/app/assets/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            background-color: #0e1015;
+            color: #f8f8f8;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .light-mode {
+            background-color: #f8f8f8;
+            color: #222;
+        }
+
+        .terminal-box {
+            background-color: rgba(30, 34, 44, 0.8);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto 0;
+        }
+
+        #loading {
+            font-style: italic;
+            display: block;
+            color: #64b5f6;
+        }
+
+        #logs {
+            white-space: pre-wrap;
+            overflow-y: scroll;
+            max-height: 400px;
+            color: #b48ead;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        .toggle-button {
+            background-color: #64b5f6;
+            color: #f8f8f8;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            position: fixed;
+            bottom: 80px;
+        }
+
+        .toggle-button:hover {
+            background-color: #4a8ac9;
+        }
+
+        #upToDate {
+            display: none;
+            color: rgb(80, 250, 123); /* Green for "Up-to-date" */
+        }
+
+        #pullNeeded {
+            display: none;
+            color: rgb(139, 233, 253); /* Cyan for "Pull needed" */
+        }
+
+        #warningLogs {
+            display: none;
+            color: rgb(255, 156, 51); /* Orange for warnings */
+        }
+
+        #errorLogs {
+            display: none;
+            color: rgb(255, 85, 85); /* Red for errors */
+        }
+
+    </style>
+    <script>
+        let upToDateDisplayed = false;
+
+        function toggleLightDarkMode() {
+            const body = document.body;
+            const button = document.querySelector(".toggle-button");
+            const isDarkMode = body.classList.toggle("light-mode");
+            button.innerText = isDarkMode ? "Dark" : "Light";
+        }
+
+        function showLogs(data) {
+            const logsElement = document.getElementById('logs');
+            const upToDateElement = document.getElementById('upToDate');
+            const pullNeededElement = document.getElementById('pullNeeded');
+            const warningLogsElement = document.getElementById('warningLogs');
+            const errorLogsElement = document.getElementById('errorLogs');
+            const loadingElement = document.getElementById('loading');
+        
+            // Reset all special log displays
+            upToDateElement.style.display = 'none';
+            pullNeededElement.style.display = 'none';
+            warningLogsElement.style.display = 'none';
+            errorLogsElement.style.display = 'none';
+            loadingElement.style.display = 'none';  // Hide the loading message
+        
+            if (data.includes("Up-to-date")) {
+                upToDateElement.innerText = "Up-to-date";
+                upToDateElement.style.display = 'block';
+            } else if (data.includes("Pull needed")) {
+                pullNeededElement.innerText = "Pull needed";
+                pullNeededElement.style.display = 'block';
+            } else if (data.includes("Warning")) { // Adjust this condition as needed
+                warningLogsElement.innerText = "Warning detected";
+                warningLogsElement.style.display = 'block';
+            } else if (data.includes("Error")) { // Adjust this condition as needed
+                errorLogsElement.innerText = "Error detected";
+                errorLogsElement.style.display = 'block';
+            } else {
+                logsElement.innerHTML = data + "<br>";
+            }
+        }
+
+        function fetchLogs() {
+            fetch('/logs')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => showLogs(data))
+                .catch(() => showLogs("Error fetching logs."));
+        }
+
+        function setCustomBackground() {
+            fetch('/background_image_url')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        document.body.style.backgroundImage = `url('${data.url}')`;
+                    }
+                })
+                .catch(() => console.error("Error fetching background image URL."));
+        }
+
+        function startFetchingLogs() {
+            setInterval(fetchLogs, 2000);
+            fetchLogs();
+            setCustomBackground();
+        }
+
+    </script>
+</head>
+
+<body onload="startFetchingLogs()">
+    <div class="terminal-box">
+        <h1 style="text-align: center;">AutoGit Logs:</h1>
+        <p id="loading">Loading...</p>
+        <div id="upToDate"></div>
+        <div id="pullNeeded"></div>
+        <div id="warningLogs"></div>
+        <div id="errorLogs"></div>
+        <pre id="logs" class="left-align"></pre>
+    </div>
+    <button class="toggle-button" onclick="toggleLightDarkMode()">Light</button>
+</body>
+
+</html>
