@@ -1,15 +1,14 @@
 FROM alpine:latest
-LABEL maintainer="morganzero@sushibox.dev"
-LABEL description="Automatic pulls and versioning"
-LABEL name="AutoGit"
+LABEL maintainer="morganzero@sushibox.dev" \
+      description="Automatic pulls and versioning" \
+      name="AutoGit"
 
 RUN apk --no-cache add git bash python3 py3-pip && \
-    pip3 install flask
+    pip3 install flask && \
+    rm -rf /var/cache/apk/*
 
 WORKDIR /app
-
 COPY assets autogit.sh versioning.py index.html server.py /app/
-
 RUN chmod +x /app/autogit.sh
 
 EXPOSE 8080
