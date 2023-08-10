@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 MYREPO="$GITPATH"
@@ -7,26 +6,23 @@ auto_versioning() {
     if [ "$AUTO_VERSIONING" = "true" ]; then
         python3 /app/versioning.py "$MYREPO" "$MYFILE"
         echo "Auto versioning applied to: $MYREPO"
-        git -C "$MYREPO" add "$MYFILE"
-        git -C "$MYREPO" commit -m "Auto-versioning applied"
-        git -C "$MYREPO" push
     fi
 }
 
 git_check() {
-    LOCAL=$(git -C "$MYREPO" rev-parse @)
-    REMOTE=$(git -C "$MYREPO" rev-parse @{u})
-    BASE=$(git -C "$MYREPO" merge-base @ @{u})
+  LOCAL=$(git -C "$MYREPO" rev-parse @)
+  REMOTE=$(git -C "$MYREPO" rev-parse @{u})
+  BASE=$(git -C "$MYREPO" merge-base @ @{u})
 
-    git -C "$MYREPO" remote update
+  git -C "$MYREPO" remote update
 
-    if [ "$LOCAL" = "$REMOTE" ]; then
-        echo "Up-to-date"
-    elif [ "$LOCAL" = "$BASE" ]; then
-        echo "Need to pull"
-        git -C "$MYREPO" pull
-        auto_versioning
-    fi
+  if [ "$LOCAL" = "$REMOTE" ]; then
+    echo "Up-to-date"
+  elif [ "$LOCAL" = "$BASE" ]; then
+    echo "Need to pull"
+    git -C "$MYREPO" pull
+    auto_versioning
+  fi
 }
 
 last_commit_msg() {
