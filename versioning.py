@@ -22,9 +22,17 @@ def get_current_versions():
     else:
         raise ValueError("Couldn't find version patterns in the file")
 
-def increment_version(version):
+def increment_version(version, bump_type="patch"):
     major, minor, patch = map(int, version[1:].split('.'))
-    patch += 1
+    if bump_type == "major":
+        major += 1
+        minor = 0
+        patch = 0
+    elif bump_type == "minor":
+        minor += 1
+        patch = 0
+    else:
+        patch += 1
     return f"v{major}.{minor}.{patch}"
 
 def update_version_file(branch):
@@ -50,8 +58,16 @@ def update_version_file_in_branch(new_version, branch):
 
 def main():
     current_branch = subprocess.check_output(["git", "-C", MYREPO, "rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
+    commit_msg = subprocess.check_output(["git", "-C", MYREPO, "log", "-1", "--pretty=%B"]).decode("utf-8").strip().lower()
     
-    update_version_file(current_branch)
+    if "major" in commit_msg:
+        bump_type = "major"
+    elif "minor" in commit_msg:
+        bump_type = "minor"
+    else:
+        bump_type = "patch"
+    
+    update_version_file(current_branch, bump_type)
 
 if __name__ == "__main__":
     main()
