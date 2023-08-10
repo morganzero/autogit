@@ -1,17 +1,14 @@
 import subprocess
-import os
-from flask import Flask, send_file, jsonify
+from flask import Flask, send_file
 
 app = Flask(__name__)
 
 def fetch_logs():
     try:
-        result = subprocess.check_output(['/app/autogit.sh'])
+        result = subprocess.check_output(['/app/auto-git.sh'])
         logs = result.decode('utf-8')
     except subprocess.CalledProcessError as e:
-        logs = f"Error running autogit.sh: {e}"
-    
-    print(logs)  # Log the result to see if logs are being fetched correctly.
+        logs = f"Error running auto-git.sh: {e}"
     return logs
 
 @app.route('/')
@@ -22,10 +19,6 @@ def index():
 def get_logs():
     logs = fetch_logs()
     return logs
-
-@app.route('/background_image_url')
-def background_image_url():
-    return jsonify(url=os.environ.get("BACKGROUND_IMAGE_URL", ""))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
