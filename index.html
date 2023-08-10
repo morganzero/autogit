@@ -142,16 +142,18 @@
                 .catch(() => showLogs("Error fetching logs."));
         }
 
-        function setCustomBackground() {
-            fetch('/background_image_url')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        document.body.style.backgroundImage = `url('${data.url}')`;
-                    }
-                })
-                .catch(() => console.error("Error fetching background image URL."));
-        }
+function setCustomBackground() {
+    fetch('/background_image_url')
+        .then(response => response.json())
+        .then(data => {
+            if (data.url) {
+                document.body.style.backgroundImage = `url('${data.url}')`;
+            } else {
+                document.body.style.backgroundImage = "url('/assets/bg.png')";
+            }
+        })
+        .catch(() => console.error("Error fetching background image URL."));
+}
 
         function startFetchingLogs() {
             setInterval(fetchLogs, 2000);
