@@ -2,11 +2,12 @@
   <img src="assets/logo.png" width="250" />
   <br/>
 
-  # AutoGit
+# AutoGit
 A minimal Docker container for auto Git pull, simple auto versioning and easy access to Docker logs via a simple web server.
 
 </div>
 
+---
 Project Description:
 
 This project provides a minimal Docker container that automatically keeps a Git repository up-to-date and serves its logs through a simple web frontend. The container runs an auto-git script to check for updates and a Flask web server to display logs on port 8080. Users can configure the Git repository path using an environment variable (GITPATH) and access logs via the web frontend.
