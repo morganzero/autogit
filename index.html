@@ -3,7 +3,7 @@
 
 <head>
     <title>AutoGit</title>
-    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
         body {
             background-color: #0e1015;
@@ -104,14 +104,12 @@
             const pullNeededElement = document.getElementById('pullNeeded');
             const warningLogsElement = document.getElementById('warningLogs');
             const errorLogsElement = document.getElementById('errorLogs');
-            const loadingElement = document.getElementById('loading');
         
             // Reset all special log displays
             upToDateElement.style.display = 'none';
             pullNeededElement.style.display = 'none';
             warningLogsElement.style.display = 'none';
             errorLogsElement.style.display = 'none';
-            loadingElement.style.display = 'none';  // Hide the loading message
         
             if (data.includes("Up-to-date")) {
                 upToDateElement.innerText = "Up-to-date";
@@ -142,24 +140,9 @@
                 .catch(() => showLogs("Error fetching logs."));
         }
 
-function setCustomBackground() {
-    fetch('/background_image_url')
-        .then(response => response.json())
-        .then(data => {
-            if (data.url) {
-                document.body.style.backgroundImage = `url('${data.url}')`;
-            } else {
-                // If no URL is provided, don't set any background.
-                document.body.style.backgroundImage = "";
-            }
-        })
-        .catch(() => console.error("Error fetching background image URL."));
-}
-        
         function startFetchingLogs() {
             setInterval(fetchLogs, 2000);
             fetchLogs();
-            setCustomBackground();
         }
 
     </script>
