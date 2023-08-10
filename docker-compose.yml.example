@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - BACKGROUND_IMAGE_URL="https://w.wallha.com/ws/13/X9tgSbmr.png"
+      - BACKGROUND_IMAGE_URL="https://w.wallha.com/ws/13/X9tgSbmr.png" # or "/assets/your_image_name.png"
       - GITPATH=/path/to/app1/repo
       - GITFILEPATH=/path/to/app1/version.file
       - EXEC_INTERVAL=30
