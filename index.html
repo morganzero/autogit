@@ -3,7 +3,7 @@
 
 <head>
     <title>AutoGit</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
     <style>
         body {
             background-color: #0e1015;
@@ -151,11 +151,11 @@
 <body onload="startFetchingLogs()">
     <div class="terminal-box">
         <h1 style="text-align: center;">AutoGit Output:</h1>
-        <p id="ready">Ready to pull...</p>
         <div id="upToDate"></div>
         <div id="pullNeeded"></div>
         <div id="warningLogs"></div>
         <div id="errorLogs"></div>
+        <p id="ready">Ready to pull...</p>
         <pre id="logs" class="left-align"></pre>
     </div>
     <button class="toggle-button" onclick="toggleLightDarkMode()">Light</button>
