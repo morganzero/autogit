@@ -5,7 +5,8 @@ MYREPO="$GITPATH"
 auto_versioning() {
     if [ "$AUTO_VERSIONING" = "true" ]; then
         python3 /app/versioning.py "$MYREPO" "$MYFILE"
-        echo "Auto versioning applied to: $MYREPO"
+        echo
+        echo "File has been automatically versioned."
     fi
 }
 
@@ -26,6 +27,7 @@ git_check() {
 }
 
 last_commit_msg() {
+    echo
     echo -e "Last commit-message:"
     git -C "$MYREPO" log -1 --pretty=format:'%B'
 }
