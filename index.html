@@ -3,8 +3,7 @@
 
 <head>
     <title>AutoGit</title>
-    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
-
+    <link rel="icon" href="/app/assets/favicon.ico" type="image/x-icon">
     <style>
         body {
             background-color: #0e1015;
@@ -33,16 +32,10 @@
             margin: 20px auto 0;
         }
 
-        #waiting {
+        #loading {
             font-style: italic;
             display: block;
-            color: #8BE9FD;
-        }
-
-        #waiting_next {
-            font-style: italic;
-            display: block;
-            color: #FF9C33;
+            color: #64b5f6;
         }
 
         #logs {
@@ -111,50 +104,59 @@
             const pullNeededElement = document.getElementById('pullNeeded');
             const warningLogsElement = document.getElementById('warningLogs');
             const errorLogsElement = document.getElementById('errorLogs');
+            const loadingElement = document.getElementById('loading');
         
             // Reset all special log displays
             upToDateElement.style.display = 'none';
             pullNeededElement.style.display = 'none';
             warningLogsElement.style.display = 'none';
             errorLogsElement.style.display = 'none';
+            loadingElement.style.display = 'none';  // Hide the loading message
         
-            if (data.includes("Error running auto-git.sh")) {
-                errorLogsElement.innerText = "Error executing the auto-git.sh script.";
+            if (data.includes("Up-to-date")) {
+                upToDateElement.innerText = "Up-to-date";
+                upToDateElement.style.display = 'block';
+            } else if (data.includes("Pull needed")) {
+                pullNeededElement.innerText = "Pull needed";
+                pullNeededElement.style.display = 'block';
+            } else if (data.includes("Warning")) { // Adjust this condition as needed
+                warningLogsElement.innerText = "Warning detected";
+                warningLogsElement.style.display = 'block';
+            } else if (data.includes("Error")) { // Adjust this condition as needed
+                errorLogsElement.innerText = "Error detected";
                 errorLogsElement.style.display = 'block';
-            } else if (data.includes("Error")) {
-                let errorMessage = data.split("Error")[1].trim(); // Extract the specific error message
-                errorLogsElement.innerText = "Error detected: " + errorMessage;
-                errorLogsElement.style.display = 'block';
-            } else if (data.includes("Last commit-message:")) {
-                let commitMessage = data.split("Last commit-message:")[1].trim();
-                logsElement.innerHTML = data.split("Last commit-message:")[0] + '<span style="color: #F8F8F2">Last commit-message:<br>' + commitMessage + '</span><br>';
             } else {
                 logsElement.innerHTML = data + "<br>";
             }
         }
 
         function fetchLogs() {
-            document.getElementById('waiting').innerText = "Pulling new commit…";
-            document.getElementById('waiting').style.color = "[1;38;2;255;156;51m";
-            setTimeout(() => {
-                fetch('/logs')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        showLogs(data);
-                        document.getElementById('waiting_next').innerText = "Waiting for next pull…";
-                    })
-                    .catch(() => showLogs("Error fetching logs."));
-            }, 1000); // Wait for 1 second before executing auto-git.sh
+            fetch('/logs')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => showLogs(data))
+                .catch(() => showLogs("Error fetching logs."));
+        }
+
+        function setCustomBackground() {
+            fetch('/background_image_url')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        document.body.style.backgroundImage = `url('${data.url}')`;
+                    }
+                })
+                .catch(() => console.error("Error fetching background image URL."));
         }
 
         function startFetchingLogs() {
             setInterval(fetchLogs, 2000);
             fetchLogs();
+            setCustomBackground();
         }
 
     </script>
@@ -162,8 +164,8 @@
 
 <body onload="startFetchingLogs()">
     <div class="terminal-box">
-        <h1 style="text-align: center;">AutoGit Logs:</h1>
-        <p id="waiting_next">Waiting for next pull…</p>
+        <h1 style="text-align: center;">AutoGit Output:</h1>
+        <p id="loading">Waiting for next pull...</p>
         <div id="upToDate"></div>
         <div id="pullNeeded"></div>
         <div id="warningLogs"></div>

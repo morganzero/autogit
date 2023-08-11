@@ -5,7 +5,7 @@ LABEL maintainer="morganzero@sushibox.dev" \
       name="AutoGit"
 
 RUN apk --no-cache add git bash python3 py3-pip && \
-    pip3 install flask Flask-Talisman && \
+    pip3 install flask && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /app
