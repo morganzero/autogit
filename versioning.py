@@ -5,7 +5,6 @@ import os
 MYREPO = os.environ.get("GITPATH")
 MYFILE = os.environ["GITFILEPATH"]
 
-
 if not os.path.exists(MYFILE):
     raise FileNotFoundError(f"Version file not found at path: {MYFILE}")
 
@@ -23,19 +22,29 @@ def get_current_versions():
     else:
         raise ValueError("Couldn't find version patterns in the file")
 
-def increment_version(version):
+def increment_version(version, level):
     major, minor, patch = map(int, version[1:].split('.'))
-    patch += 1
+    
+    if level == "major":
+        major += 1
+        minor = 0
+        patch = 0
+    elif level == "minor":
+        minor += 1
+        patch = 0
+    else:
+        patch += 1
+    
     return f"v{major}.{minor}.{patch}"
 
-def update_version_file(branch):
+def update_version_file(branch, level):
     latest_version, develop_version = get_current_versions()
     
     if branch == "latest":
-        new_latest_version = increment_version(latest_version)
+        new_latest_version = increment_version(latest_version, level)
         update_version_file_in_branch(new_latest_version, "latest")
     elif branch == "develop":
-        new_develop_version = increment_version(develop_version)
+        new_develop_version = increment_version(develop_version, level)
         update_version_file_in_branch(new_develop_version, "develop")
     else:
         print("Unknown branch:", branch)
@@ -51,8 +60,15 @@ def update_version_file_in_branch(new_version, branch):
 
 def main():
     current_branch = subprocess.check_output(["git", "-C", MYREPO, "rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
+
+    commit_message = subprocess.check_output(["git", "-C", MYREPO, "log", "-1", "--pretty=%B"]).decode("utf-8").strip()
+    level = "patch"
+    if "minor" in commit_message:
+        level = "minor"
+    elif "major" in commit_message:
+        level = "major"
     
-    update_version_file(current_branch)
+    update_version_file(current_branch, level)
 
 if __name__ == "__main__":
     main()
