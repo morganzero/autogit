@@ -74,7 +74,7 @@ def main():
     commit_message = subprocess.check_output(["git", "-C", MYREPO, "log", "-1", "--pretty=%B"]).decode("utf-8").strip()
     
     if "rollback" in commit_message:
-        match = re.search(r"rollback (\d+\.\d+\.\d+)", commit_message)
+        match = re.search(r"rollback \[(\d+\.\d+\.\d+)\]", commit_message)
         if match:
             rollback_version(match.group(1))
     else:
