@@ -1,14 +1,7 @@
 import subprocess
 from flask import Flask, send_from_directory, send_file
-from flask_talisman import Talisman
 
 app = Flask(__name__, static_folder='assets')
-csp = {
-    'default-src': "'self'",
-    'style-src': "'self' 'unsafe-inline'",
-    'img-src': "'self' data:",
-}
-Talisman(app, content_security_policy=csp)
 
 def fetch_logs():
     try:
