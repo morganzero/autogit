@@ -131,31 +131,29 @@
                 let errorMessage = data.split("Error")[1].trim(); // Extract the specific error message
                 errorLogsElement.innerText = "Error detected: " + errorMessage;
                 errorLogsElement.style.display = 'block';
-            } else if (data.includes("Last commit-message:")) {
+            if (data.includes("Last commit-message:")) {
                 let commitMessage = data.split("Last commit-message:")[1].trim();
-                logsElement.innerHTML = data.split("Last commit-message:")[0] + '<span style="color: #F8F8F2">Last commit-message:<br>' + commitMessage + '</span><br>';
+                logsElement.innerHTML += '<span style="color: #F8F8F2">Last commit-message:<br>' + commitMessage + '</span><br>';
             } else {
-                logsElement.innerHTML = data + "<br>";
+                logsElement.innerHTML += data + "<br>";
+            }
             }
         }
 
         function fetchLogs() {
-            document.getElementById('waiting').innerText = "Pulling new commit…";
-            document.getElementById('waiting').style.color = "#FF9C33"; // Fixed color value
-            setTimeout(() => {
-                fetch('/logs')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        showLogs(data);
+            fetch('/logs')
+                .then(response => response.text())
+                .then(data => {
+                    showLogs(data);
+                    if (data.includes("Need to pull")) {
+                        document.getElementById('waiting_next').innerText = "Pulling new commit…";
+                        document.getElementById('waiting_next').style.color = "#FF9C33"; // OR="\033[1;38;2;255;156;51m"
+                        setTimeout(fetchLogs, 1000); // Wait for 1 second before the next pull
+                    } else {
                         document.getElementById('waiting_next').innerText = "Waiting for next pull…";
-                    })
-                    .catch(() => showLogs("Error fetching logs."));
-            }, 1000); // Wait for 1 second before executing auto-git.sh
+                        document.getElementById('waiting_next').style.color = "#8BE9FD"; // CY="\033[1;38;2;139;233;253m"
+                    }
+                });
         }
 
         function startFetchingLogs() {
@@ -169,7 +167,7 @@
 <body onload="startFetchingLogs()">
     <div class="terminal-box">
         <h1 style="text-align: center;">AutoGit Logs:</h1>
-        <p id="waiting_next">Waiting for next pull…</p>
+        <p id="waiting_next" style="color: #8BE9FD;">Waiting for next pull…</p>
         <div id="upToDate"></div>
         <div id="pullNeeded"></div>
         <div id="warningLogs"></div>
