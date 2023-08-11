@@ -124,6 +124,9 @@
             } else if (data.includes("Error")) {
                 errorLogsElement.innerText = "Error detected";
                 errorLogsElement.style.display = 'block';
+            } else if (data.includes("Last commit-message:")) {
+                let commitMessage = data.split("Last commit-message:")[1].trim();
+                logsElement.innerHTML = data.split("Last commit-message:")[0] + '<span style="color: #F8F8F2">Last commit-message:<br>' + commitMessage + '</span><br>';
             } else {
                 logsElement.innerHTML = data + "<br>";
             }

@@ -1,8 +1,5 @@
 #!/bin/bash
 
-OW="\033[1;38;2;248;248;242m"
-NC="\e[1;0m"
-
 MYREPO="$GITPATH"
 
 auto_versioning() {
@@ -29,8 +26,8 @@ git_check() {
 }
 
 last_commit_msg() {
-    echo -e "Last commit-message:
-${OW}$(git -C "$MYREPO" log -1 --pretty=format:'%B')${NC}"
+    echo -e "Last commit-message:"
+    git -C "$MYREPO" log -1 --pretty=format:'%B'
 }
 
 add_date() {
