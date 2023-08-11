@@ -3,7 +3,7 @@
 
 <head>
     <title>AutoGit</title>
-    <link rel="icon" href="/app/assets/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
     <style>
         body {
             background-color: #0e1015;
@@ -67,26 +67,6 @@
             background-color: #4a8ac9;
         }
 
-        #upToDate {
-            display: none;
-            color: rgb(80, 250, 123); /* Green for "Up-to-date" */
-        }
-
-        #pullNeeded {
-            display: none;
-            color: rgb(139, 233, 253); /* Cyan for "Pull needed" */
-        }
-
-        #warningLogs {
-            display: none;
-            color: rgb(255, 156, 51); /* Orange for warnings */
-        }
-
-        #errorLogs {
-            display: none;
-            color: rgb(255, 85, 85); /* Red for errors */
-        }
-
     </style>
     <script>
         let upToDateDisplayed = false;
@@ -101,33 +81,26 @@
         function showLogs(data) {
             const logsElement = document.getElementById('logs');
             const upToDateElement = document.getElementById('upToDate');
-            const pullNeededElement = document.getElementById('pullNeeded');
-            const warningLogsElement = document.getElementById('warningLogs');
             const errorLogsElement = document.getElementById('errorLogs');
-            const loadingElement = document.getElementById('loading');
-        
-            // Reset all special log displays
-            upToDateElement.style.display = 'none';
-            pullNeededElement.style.display = 'none';
-            warningLogsElement.style.display = 'none';
-            errorLogsElement.style.display = 'none';
-            loadingElement.style.display = 'none';  // Hide the loading message
-        
-            if (data.includes("Up-to-date")) {
+
+            if (data.includes("Up-to-date") && !upToDateDisplayed) {
                 upToDateElement.innerText = "Up-to-date";
                 upToDateElement.style.display = 'block';
-            } else if (data.includes("Pull needed")) {
-                pullNeededElement.innerText = "Pull needed";
-                pullNeededElement.style.display = 'block';
-            } else if (data.includes("Warning")) { // Adjust this condition as needed
-                warningLogsElement.innerText = "Warning detected";
-                warningLogsElement.style.display = 'block';
-            } else if (data.includes("Error")) { // Adjust this condition as needed
-                errorLogsElement.innerText = "Error detected";
-                errorLogsElement.style.display = 'block';
-            } else {
                 logsElement.innerHTML = data + "<br>";
+                upToDateDisplayed = true;
+            } else if (data.includes("Error fetching logs.")) {
+                errorLogsElement.innerText = "Error fetching logs.";
+                errorLogsElement.style.display = 'block';
+                logsElement.style.display = 'none';
+            } else {
+                upToDateElement.style.display = 'none';
+                errorLogsElement.style.display = 'none';
+                logsElement.innerHTML = data + "<br>";
+                upToDateDisplayed = false;
             }
+
+            document.getElementById('loading').style.display = 'none';
+            logsElement.scrollTop = logsElement.scrollHeight;
         }
 
         function fetchLogs() {
@@ -142,21 +115,9 @@
                 .catch(() => showLogs("Error fetching logs."));
         }
 
-        function setCustomBackground() {
-            fetch('/background_image_url')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        document.body.style.backgroundImage = `url('${data.url}')`;
-                    }
-                })
-                .catch(() => console.error("Error fetching background image URL."));
-        }
-
         function startFetchingLogs() {
             setInterval(fetchLogs, 2000);
             fetchLogs();
-            setCustomBackground();
         }
 
     </script>
@@ -164,12 +125,10 @@
 
 <body onload="startFetchingLogs()">
     <div class="terminal-box">
-        <h1 style="text-align: center;">AutoGit Output:</h1>
-        <p id="loading">Waiting for next pull...</p>
-        <div id="upToDate"></div>
-        <div id="pullNeeded"></div>
-        <div id="warningLogs"></div>
-        <div id="errorLogs"></div>
+        <h1 style="text-align: center;">AutoGit Logs:</h1>
+        <p id="loading">Loading...</p>
+        <div id="upToDate" style="display: none; color: green;"></div>
+        <div id="errorLogs" style="display: none; color: red;"></div>
         <pre id="logs" class="left-align"></pre>
     </div>
     <button class="toggle-button" onclick="toggleLightDarkMode()">Light</button>
