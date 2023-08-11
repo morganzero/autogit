@@ -1,6 +1,7 @@
 #!/bin/bash
 
 MYREPO="$GITPATH"
+MYFILE="$GITFILEPATH"
 
 auto_versioning() {
     if [ "$AUTO_VERSIONING" = "true" ]; then
