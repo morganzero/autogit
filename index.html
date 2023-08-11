@@ -3,7 +3,8 @@
 
 <head>
     <title>AutoGit</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+
     <style>
         body {
             background-color: #0e1015;
@@ -111,16 +112,10 @@
             warningLogsElement.style.display = 'none';
             errorLogsElement.style.display = 'none';
         
-            if (data.includes("Up-to-date")) {
-                upToDateElement.innerText = "Up-to-date";
-                upToDateElement.style.display = 'block';
-            } else if (data.includes("Pull needed")) {
-                pullNeededElement.innerText = "Pull needed";
-                pullNeededElement.style.display = 'block';
-            } else if (data.includes("Warning")) { // Adjust this condition as needed
-                warningLogsElement.innerText = "Warning detected";
-                warningLogsElement.style.display = 'block';
-            } else if (data.includes("Error")) { // Adjust this condition as needed
+            if (data.includes("Error running auto-git.sh")) {
+                errorLogsElement.innerText = "Error executing the auto-git.sh script.";
+                errorLogsElement.style.display = 'block';
+            } else if (data.includes("Error")) {
                 errorLogsElement.innerText = "Error detected";
                 errorLogsElement.style.display = 'block';
             } else {
