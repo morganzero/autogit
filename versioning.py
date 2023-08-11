@@ -57,7 +57,7 @@ def update_version_file_in_branch(new_version, branch):
     with open(MYFILE, 'r') as version_file:
         content = version_file.read()
     
-    content = re.sub(f"{branch}='v\d+\.\d+\.\d+'", f"{branch}='{new_version}'", content)
+    content = re.sub(f"{branch}='{get_current_versions()[2]}'", f"{branch}='{new_version}'", content)
 
     with open(MYFILE, 'w') as version_file:
         version_file.write(content)
