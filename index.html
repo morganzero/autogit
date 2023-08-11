@@ -33,10 +33,16 @@
             margin: 20px auto 0;
         }
 
-        #loading {
+        #waiting {
             font-style: italic;
             display: block;
-            color: #64b5f6;
+            color: #8BE9FD;
+        }
+
+        #waiting_next {
+            font-style: italic;
+            display: block;
+            color: #FF9C33;
         }
 
         #logs {
@@ -124,15 +130,22 @@
         }
 
         function fetchLogs() {
-            fetch('/logs')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(data => showLogs(data))
-                .catch(() => showLogs("Error fetching logs."));
+            document.getElementById('waiting').innerText = "Pulling new commit…";
+            document.getElementById('waiting').style.color = "[1;38;2;255;156;51m";
+            setTimeout(() => {
+                fetch('/logs')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        showLogs(data);
+                        document.getElementById('waiting_next').innerText = "Waiting for next pull…";
+                    })
+                    .catch(() => showLogs("Error fetching logs."));
+            }, 1000); // Wait for 1 second before executing auto-git.sh
         }
 
         function startFetchingLogs() {
@@ -146,7 +159,7 @@
 <body onload="startFetchingLogs()">
     <div class="terminal-box">
         <h1 style="text-align: center;">AutoGit Logs:</h1>
-        <p id="loading">Loading...</p>
+        <p id="waiting">Waiting for next pull…</p>
         <div id="upToDate"></div>
         <div id="pullNeeded"></div>
         <div id="warningLogs"></div>
