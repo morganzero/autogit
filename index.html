@@ -33,15 +33,21 @@
             margin: 20px auto 0;
         }
 
-        #waiting {
+        #waiting,
+        #waiting_next,
+        #logs,
+        #upToDate,
+        #pullNeeded,
+        #warningLogs,
+        #errorLogs {
             font-style: italic;
-            display: block;
+        }
+
+        #waiting {
             color: #8BE9FD;
         }
 
         #waiting_next {
-            font-style: italic;
-            display: block;
             color: #FF9C33;
         }
 
@@ -122,7 +128,8 @@
                 errorLogsElement.innerText = "Error executing the auto-git.sh script.";
                 errorLogsElement.style.display = 'block';
             } else if (data.includes("Error")) {
-                errorLogsElement.innerText = "Error detected";
+                let errorMessage = data.split("Error")[1].trim(); // Extract the specific error message
+                errorLogsElement.innerText = "Error detected: " + errorMessage;
                 errorLogsElement.style.display = 'block';
             } else if (data.includes("Last commit-message:")) {
                 let commitMessage = data.split("Last commit-message:")[1].trim();
@@ -134,7 +141,7 @@
 
         function fetchLogs() {
             document.getElementById('waiting').innerText = "Pulling new commit…";
-            document.getElementById('waiting').style.color = "[1;38;2;255;156;51m";
+            document.getElementById('waiting').style.color = "#FF9C33"; // Fixed color value
             setTimeout(() => {
                 fetch('/logs')
                     .then(response => {
@@ -162,7 +169,7 @@
 <body onload="startFetchingLogs()">
     <div class="terminal-box">
         <h1 style="text-align: center;">AutoGit Logs:</h1>
-        <p id="waiting">Waiting for next pull…</p>
+        <p id="waiting_next">Waiting for next pull…</p>
         <div id="upToDate"></div>
         <div id="pullNeeded"></div>
         <div id="warningLogs"></div>
