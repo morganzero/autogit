@@ -33,21 +33,15 @@
             margin: 20px auto 0;
         }
 
-        #waiting,
-        #waiting_next,
-        #logs,
-        #upToDate,
-        #pullNeeded,
-        #warningLogs,
-        #errorLogs {
-            font-style: italic;
-        }
-
         #waiting {
+            font-style: italic;
+            display: block;
             color: #8BE9FD;
         }
 
         #waiting_next {
+            font-style: italic;
+            display: block;
             color: #FF9C33;
         }
 
@@ -141,7 +135,7 @@
 
         function fetchLogs() {
             document.getElementById('waiting').innerText = "Pulling new commit…";
-            document.getElementById('waiting').style.color = "#FF9C33"; // Fixed color value
+            document.getElementById('waiting').style.color = "[1;38;2;255;156;51m";
             setTimeout(() => {
                 fetch('/logs')
                     .then(response => {

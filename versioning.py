@@ -1,7 +1,6 @@
 import re
 import subprocess
 import os
-import argparse
 
 MYREPO = os.environ.get("GITPATH")
 MYFILE = os.environ["GITFILEPATH"]
@@ -58,16 +57,7 @@ def update_version_file_in_branch(new_version, branch):
         version_file.write(content)
 
 def main():
-    parser = argparse.ArgumentParser(description="Update version based on commit message.")
-    parser.add_argument("--branch", required=True, choices=["latest", "develop"], help="Branch name")
-    args = parser.parse_args()
-
     current_branch = subprocess.check_output(["git", "-C", MYREPO, "rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
-    
-    if current_branch != args.branch:
-        print(f"Current branch '{current_branch}' does not match specified branch '{args.branch}'. Exiting.")
-        return
-    
     commit_msg = subprocess.check_output(["git", "-C", MYREPO, "log", "-1", "--pretty=%B"]).decode("utf-8").strip().lower()
     
     if "major" in commit_msg:

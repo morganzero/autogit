@@ -10,23 +10,23 @@ auto_versioning() {
 }
 
 git_check() {
-    LOCAL=$(git -C "$MYREPO" rev-parse @)
-    REMOTE=$(git -C "$MYREPO" rev-parse @{u})
-    BASE=$(git -C "$MYREPO" merge-base @ @{u})
+  LOCAL=$(git -C "$MYREPO" rev-parse @)
+  REMOTE=$(git -C "$MYREPO" rev-parse @{u})
+  BASE=$(git -C "$MYREPO" merge-base @ @{u})
 
-    git -C "$MYREPO" remote update
+  git -C "$MYREPO" remote update
 
-    if [ "$LOCAL" = "$REMOTE" ]; then
-        echo "Up-to-date"
-    elif [ "$LOCAL" = "$BASE" ]; then
-        echo "Need to pull"
-        git -C "$MYREPO" pull
-        auto_versioning
-    fi
+  if [ "$LOCAL" = "$REMOTE" ]; then
+    echo "Up-to-date"
+  elif [ "$LOCAL" = "$BASE" ]; then
+    echo "Need to pull"
+    git -C "$MYREPO" pull
+    auto_versioning
+  fi
 }
 
 last_commit_msg() {
-    printf "Last commit-message:\n"
+    echo -e "Last commit-message:"
     git -C "$MYREPO" log -1 --pretty=format:'%B'
 }
 
