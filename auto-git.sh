@@ -10,6 +10,13 @@ auto_versioning() {
     fi
 }
 
+the_pull() {
+    echo "New update detected..."
+    echo "Pulling..."
+    git -C "$MYREPO" pull
+    echo "Pull was a success."
+}
+
 git_check() {
   LOCAL=$(git -C "$MYREPO" rev-parse @)
   REMOTE=$(git -C "$MYREPO" rev-parse @{u})
@@ -20,8 +27,7 @@ git_check() {
   if [ "$LOCAL" = "$REMOTE" ]; then
     echo "Up-to-date"
   elif [ "$LOCAL" = "$BASE" ]; then
-    echo "Need to pull"
-    git -C "$MYREPO" pull
+    the_pull 2>&1 | add_date
     auto_versioning
   fi
 }
@@ -36,5 +42,5 @@ add_date() {
     awk '{ print strftime("%Y-%m-%d %T"), $0 }'
 }
     
-git_check 2>&1 | add_date
+git_check
 last_commit_msg
