@@ -7,6 +7,7 @@ auto_versioning() {
         python3 /app/versioning.py "$MYREPO" "$MYFILE"
         echo
         echo "File has been automatically versioned."
+        echo
     fi
 }
 
@@ -15,6 +16,14 @@ the_pull() {
     echo "Pulling..."
     git -C "$MYREPO" pull
     echo "Pull was a success."
+}
+
+the_push() {
+    echo "Pushing new version back to repo..."
+    git -C "$MYREPO" add "$MYFILE"
+    git -C "$MYREPO" commit -m "AutoGit updated versioning file"
+    git -C "$MYREPO" push
+    echo "Push was successful."
 }
 
 git_check() {
@@ -29,6 +38,7 @@ git_check() {
   elif [ "$LOCAL" = "$BASE" ]; then
     the_pull 2>&1 | add_date
     auto_versioning
+    the_push 2>&1 | add_date
   fi
 }
 
