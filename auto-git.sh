@@ -39,7 +39,7 @@ git_check() {
   elif [ "$LOCAL" = "$BASE" ]; then
     the_pull 2>&1 | add_date
     auto_versioning
-    the_push 2>&1 | add_date
+    #the_push 2>&1 | add_date
   fi
 }
 
