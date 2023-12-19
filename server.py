@@ -1,3 +1,4 @@
+import os
 import subprocess
 from flask import Flask, send_from_directory, send_file
 
@@ -22,7 +23,7 @@ def get_logs():
 
 @app.route('/assets/favicon.ico')
 def favicon():
-    return send_file('favicon.ico', mimetype='image/x-icon')
+    return send_file(os.path.join(app.static_folder, 'favicon.ico'), mimetype='image/x-icon')
 
 @app.route('/assets/<path:filename>')
 def serve_static(filename):

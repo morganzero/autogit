@@ -4,13 +4,17 @@ LABEL maintainer="morganzero@sushibox.dev" \
       description="Automatic pulls and versioning" \
       name="AutoGit"
 
-RUN apk --no-cache add git bash python3 py3-pip && \
-    pip3 install flask && \
+RUN apk --no-cache add git bash python3 py3-pip && rm -rf /var/cache/apk/*
+
+RUN python3 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+RUN pip3 install flask && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
-COPY assets auto-git.sh versioning.py index.html server.py /app/
+COPY . /app/
 
 RUN chmod +x /app/auto-git.sh
 
